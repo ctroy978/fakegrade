@@ -1,0 +1,151 @@
+{
+  "rubric": {
+    "course": "WR 121 - College Composition",
+    "description": "This 4-point grading rubric evaluates student essays based on common criteria for WR 121. The scale ranges from 4 (Excellent) to 1 (Poor). The teacher may add 10–20 points to the final score, for a maximum of 120 points.",
+    "scale": {
+      "4": "Excellent",
+      "3": "Good",
+      "2": "Fair",
+      "1": "Poor"
+    },
+    "criteria": [
+      {
+        "name": "Thesis and Argument",
+        "weight": 25,
+        "description": "Clarity, focus, and strength of the main claim or thesis statement.",
+        "levels": [
+          {
+            "score": 4,
+            "label": "Excellent",
+            "description": "Thesis is clear, insightful, and effectively guides the entire essay with a strong, original argument."
+          },
+          {
+            "score": 3,
+            "label": "Good",
+            "description": "Thesis is clear and focused, with a solid argument that adequately addresses the prompt."
+          },
+          {
+            "score": 2,
+            "label": "Fair",
+            "description": "Thesis is present but lacks clarity, focus, or full relevance to the prompt."
+          },
+          {
+            "score": 1,
+            "label": "Poor",
+            "description": "No clear thesis, or the argument is absent, irrelevant, or severely underdeveloped."
+          }
+        ]
+      },
+      {
+        "name": "Organization and Coherence",
+        "weight": 20,
+        "description": "Logical structure, flow, and use of transitions to connect ideas.",
+        "levels": [
+          {
+            "score": 4,
+            "label": "Excellent",
+            "description": "Essay is exceptionally well-organized with seamless transitions and a coherent progression of ideas."
+          },
+          {
+            "score": 3,
+            "label": "Good",
+            "description": "Clear structure with effective transitions; ideas flow logically overall."
+          },
+          {
+            "score": 2,
+            "label": "Fair",
+            "description": "Basic organization present, but some sections feel disjointed or transitions are weak."
+          },
+          {
+            "score": 1,
+            "label": "Poor",
+            "description": "Lacks logical structure; ideas are disorganized or jump abruptly without connections."
+          }
+        ]
+      },
+      {
+        "name": "Development and Support",
+        "weight": 25,
+        "description": "Use of evidence, examples, and sources to develop and support claims.",
+        "levels": [
+          {
+            "score": 4,
+            "label": "Excellent",
+            "description": "Rich, relevant evidence from credible sources, integrated smoothly to strongly support the argument."
+          },
+          {
+            "score": 3,
+            "label": "Good",
+            "description": "Adequate evidence and examples that effectively support main points."
+          },
+          {
+            "score": 2,
+            "label": "Fair",
+            "description": "Some support provided, but evidence is limited, underdeveloped, or not fully integrated."
+          },
+          {
+            "score": 1,
+            "label": "Poor",
+            "description": "Little to no evidence or support; claims are unsubstantiated or irrelevant."
+          }
+        ]
+      },
+      {
+        "name": "Critical Analysis and Understanding",
+        "weight": 15,
+        "description": "Depth of analysis, critical thinking, and engagement with the topic or readings.",
+        "levels": [
+          {
+            "score": 4,
+            "label": "Excellent",
+            "description": "Demonstrates sophisticated analysis with original insights and deep engagement with the material."
+          },
+          {
+            "score": 3,
+            "label": "Good",
+            "description": "Solid analysis with clear interpretation and appropriate engagement with the topic."
+          },
+          {
+            "score": 2,
+            "label": "Fair",
+            "description": "Basic analysis present, but lacks depth or critical insight."
+          },
+          {
+            "score": 1,
+            "label": "Poor",
+            "description": "Minimal or no analysis; shows superficial understanding or misunderstanding of the material."
+          }
+        ]
+      },
+      {
+        "name": "Language, Style, and Mechanics",
+        "weight": 15,
+        "description": "Clarity, grammar, diction, sentence variety, and adherence to conventions.",
+        "levels": [
+          {
+            "score": 4,
+            "label": "Excellent",
+            "description": "Polished, engaging prose with precise language, varied sentences, and no errors."
+          },
+          {
+            "score": 3,
+            "label": "Good",
+            "description": "Clear and effective language with minor errors that do not distract."
+          },
+          {
+            "score": 2,
+            "label": "Fair",
+            "description": "Readable but with noticeable errors in grammar, style, or mechanics that affect clarity."
+          },
+          {
+            "score": 1,
+            "label": "Poor",
+            "description": "Frequent errors in grammar, spelling, or style that hinder comprehension."
+          }
+        ]
+      }
+    ],
+    "total_points": 100,
+    "notes": "Each criterion is scored from 1 to 4. The score is multiplied by the weight to calculate points (e.g., a 4 in Thesis and Argument = 4 * (25/4) = 25 points). The teacher may add 10–20 points based on overall assessment, for a maximum of 120 points. Feedback will be provided to support improvement. This rubric is based on common practices in first-year writing programs, adapted for WR 121."
+  }
+}

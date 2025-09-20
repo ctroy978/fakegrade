@@ -74,16 +74,16 @@ For security, the API key is loaded from an environment variable. You can set th
 
 ## Usage
 
-Run the `evaluate.py` script from your terminal, providing the paths to the rubric PDF and the student paper PDF as arguments.
+Run the `evaluate.py` script from your terminal, providing the paths to the rubric file (PDF or JSON) and the student paper PDF as arguments.
 
 ```bash
-python evaluate.py <path_to_rubric.pdf> <path_to_student_paper.pdf>
+python evaluate.py <path_to_rubric_file> <path_to_student_paper.pdf>
 ```
 
 **Example:**
 
 ```bash
-python evaluate.py rubric.pdf student_paper.pdf
+python evaluate.py rubric.json student_paper.pdf
 ```
 
 ## Example Output

@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import json
 import google.generativeai as genai
 from PyPDF2 import PdfReader
 from dotenv import load_dotenv
@@ -31,6 +32,32 @@ def extract_text_from_pdf(pdf_path):
         raise FileNotFoundError(f"Error: The file '{pdf_path}' was not found.")
     except Exception as e:
         raise IOError(f"Error reading PDF file '{pdf_path}': {e}")
+
+def extract_text_from_json(json_path):
+    """
+    Extracts text from a JSON file.
+    """
+    try:
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+            return data.get('rubric', '')
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Error: The file '{json_path}' was not found.")
+    except json.JSONDecodeError:
+        raise ValueError(f"Error: The file '{json_path}' is not a valid JSON file.")
+    except Exception as e:
+        raise IOError(f"Error reading JSON file '{json_path}': {e}")
+
+def get_rubric_text(rubric_path):
+    """
+    Extracts text from a rubric file (PDF or JSON).
+    """
+    if rubric_path.lower().endswith('.pdf'):
+        return extract_text_from_pdf(rubric_path)
+    elif rubric_path.lower().endswith('.json'):
+        return extract_text_from_json(rubric_path)
+    else:
+        raise ValueError("Unsupported rubric file format. Please use a .pdf or .json file.")
 
 def get_initial_evaluation(rubric_text, paper_text):
     """
@@ -92,27 +119,27 @@ def main():
     Main function to run the evaluation script.
     """
     parser = argparse.ArgumentParser(description="Evaluate a student paper against a rubric.")
-    parser.add_argument("rubric_pdf", help="The path to the rubric PDF file.")
+    parser.add_argument("rubric_file", help="The path to the rubric file (PDF or JSON).")
     parser.add_argument("student_paper_pdf", help="The path to the student paper PDF file.")
     args = parser.parse_args()
 
     try:
         setup_api_key()
-        rubric_text = extract_text_from_pdf(args.rubric_pdf)
+        rubric_text = get_rubric_text(args.rubric_file)
         paper_text = extract_text_from_pdf(args.student_paper_pdf)
         evaluation_a, evaluation_b, final_evaluation = evaluate_paper(rubric_text, paper_text)
 
         print("\n--- Grader A Evaluation ---")
         print(evaluation_a)
-        print("--- End of Grader A Evaluation ---\\n")
+        print("--- End of Grader A Evaluation ---\n")
 
         print("\n--- Grader B Evaluation ---")
         print(evaluation_b)
-        print("--- End of Grader B Evaluation ---\\n")
+        print("--- End of Grader B Evaluation ---\n")
 
         print("\n--- Final Evaluation ---")
         print(final_evaluation)
-        print("--- End of Final Evaluation ---\\n")
+        print("--- End of Final Evaluation ---\n")
 
     except (ValueError, FileNotFoundError, IOError, RuntimeError) as e:
         print(f"An error occurred: {e}", file=sys.stderr)
