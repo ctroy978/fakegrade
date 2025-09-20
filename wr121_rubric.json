@@ -1,7 +1,7 @@
 {
   "rubric": {
     "course": "WR 121 - College Composition",
-    "description": "This 4-point grading rubric evaluates student essays based on common criteria for WR 121. The scale ranges from 4 (Excellent) to 1 (Poor). The teacher may add 10–20 points to the final score, for a maximum of 120 points.",
+    "description": "This rubric evaluates student essays based on five criteria, each scored from 1 to 4 (Poor=1, Fair=2, Good=3, Excellent=4). Scores are summed for a total out of 20 points.",
     "scale": {
       "4": "Excellent",
       "3": "Good",
@@ -11,7 +11,6 @@
     "criteria": [
       {
         "name": "Thesis and Argument",
-        "weight": 25,
         "description": "Clarity, focus, and strength of the main claim or thesis statement.",
         "levels": [
           {
@@ -38,7 +37,6 @@
       },
       {
         "name": "Organization and Coherence",
-        "weight": 20,
         "description": "Logical structure, flow, and use of transitions to connect ideas.",
         "levels": [
           {
@@ -65,7 +63,6 @@
       },
       {
         "name": "Development and Support",
-        "weight": 25,
         "description": "Use of evidence, examples, and sources to develop and support claims.",
         "levels": [
           {
@@ -92,7 +89,6 @@
       },
       {
         "name": "Critical Analysis and Understanding",
-        "weight": 15,
         "description": "Depth of analysis, critical thinking, and engagement with the topic or readings.",
         "levels": [
           {
@@ -119,7 +115,6 @@
       },
       {
         "name": "Language, Style, and Mechanics",
-        "weight": 15,
         "description": "Clarity, grammar, diction, sentence variety, and adherence to conventions.",
         "levels": [
           {
@@ -145,7 +140,6 @@
         ]
       }
     ],
-    "total_points": 100,
-    "notes": "Each criterion is scored from 1 to 4. The score is multiplied by the weight to calculate points (e.g., a 4 in Thesis and Argument = 4 * (25/4) = 25 points). The teacher may add 10–20 points based on overall assessment, for a maximum of 120 points. Feedback will be provided to support improvement. This rubric is based on common practices in first-year writing programs, adapted for WR 121."
+    "total_points": 20
   }
 }
