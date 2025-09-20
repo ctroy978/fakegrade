@@ -6,7 +6,7 @@ import google.generativeai as genai
 from PyPDF2 import PdfReader
 from dotenv import load_dotenv
 import concurrent.futures
-from prompt import GRADING_PROMPT, ARBITRATOR_PROMPT
+from prompt import GRADING_PROMPT, MODERATOR_PROMPT
 
 def setup_api_key():
     """
@@ -59,12 +59,14 @@ def get_rubric_text(rubric_path):
     else:
         raise ValueError("Unsupported rubric file format. Please use a .pdf or .json file.")
 
-def get_initial_evaluation(rubric_text, paper_text):
+def get_evaluation(prompt, temperature, rubric_text, paper_text):
     """
     Performs a single evaluation of the paper against the rubric.
     """
     model = genai.GenerativeModel('gemini-1.5-flash')
-    prompt = f"""{GRADING_PROMPT}
+    full_prompt = f"""Calibrate evaluations for community college freshmen: Be fair, constructive, and motivational. Typical papers should score 10-15/20, not failing unless severely deficient.
+
+{prompt}
 
 Rubric:
 {rubric_text}
@@ -72,15 +74,17 @@ Rubric:
 Student Paper:
 {paper_text}
 """
-    response = model.generate_content(prompt)
+    response = model.generate_content(full_prompt, generation_config=genai.types.GenerationConfig(temperature=temperature))
     return response.text
 
-def arbitrate_evaluations(evaluation_a, evaluation_b, rubric_text, paper_text):
+def moderate_evaluations(evaluation_a, evaluation_b, rubric_text, paper_text):
     """
-    Arbitrates between two evaluations to produce a final evaluation.
+    Moderates between two evaluations to produce a final evaluation.
     """
     model = genai.GenerativeModel('gemini-1.5-flash')
-    prompt = f"""{ARBITRATOR_PROMPT}
+    prompt = f"""Calibrate evaluations for community college freshmen: Be fair, constructive, and motivational. Typical papers should score 10-15/20, not failing unless severely deficient.
+
+{MODERATOR_PROMPT}
 
 Rubric:
 {rubric_text}
@@ -103,12 +107,12 @@ def evaluate_paper(rubric_text, paper_text):
     """
     try:
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_a = executor.submit(get_initial_evaluation, rubric_text, paper_text)
-            future_b = executor.submit(get_initial_evaluation, rubric_text, paper_text)
+            future_a = executor.submit(get_evaluation, GRADING_PROMPT, 0.4, rubric_text, paper_text)
+            future_b = executor.submit(get_evaluation, GRADING_PROMPT, 0.8, rubric_text, paper_text)
             evaluation_a = future_a.result()
             evaluation_b = future_b.result()
 
-        final_evaluation = arbitrate_evaluations(evaluation_a, evaluation_b, rubric_text, paper_text)
+        final_evaluation = moderate_evaluations(evaluation_a, evaluation_b, rubric_text, paper_text)
         return evaluation_a, evaluation_b, final_evaluation
 
     except Exception as e:
@@ -129,17 +133,17 @@ def main():
         paper_text = extract_text_from_pdf(args.student_paper_pdf)
         evaluation_a, evaluation_b, final_evaluation = evaluate_paper(rubric_text, paper_text)
 
-        print("\n--- Grader A Evaluation ---")
+        print("\n--- Agent 1 Evaluation ---")
         print(evaluation_a)
-        print("--- End of Grader A Evaluation ---\n")
+        print("--- End of Agent 1 Evaluation ---\n")
 
-        print("\n--- Grader B Evaluation ---")
+        print("\n--- Agent 2 Evaluation ---")
         print(evaluation_b)
-        print("--- End of Grader B Evaluation ---\n")
+        print("--- End of Agent 2 Evaluation ---\n")
 
-        print("\n--- Final Evaluation ---")
+        print("\n--- Final Moderator Evaluation ---")
         print(final_evaluation)
-        print("--- End of Final Evaluation ---\n")
+        print("--- End of Final Moderator Evaluation ---\n")
 
     except (ValueError, FileNotFoundError, IOError, RuntimeError) as e:
         print(f"An error occurred: {e}", file=sys.stderr)
