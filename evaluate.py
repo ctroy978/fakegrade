@@ -6,6 +6,7 @@ import google.generativeai as genai
 from PyPDF2 import PdfReader
 from dotenv import load_dotenv
 import concurrent.futures
+from fpdf import FPDF
 from prompt import GRADING_PROMPT, MODERATOR_PROMPT
 
 def setup_api_key():
@@ -118,32 +119,79 @@ def evaluate_paper(rubric_text, paper_text):
     except Exception as e:
         raise RuntimeError(f"Error during Gemini API call: {e}")
 
+def save_evaluation_to_pdf(evaluation_text, output_path):
+    """
+    Saves the evaluation text to a PDF file.
+    """
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, evaluation_text.encode('latin-1', 'replace').decode('latin-1'))
+    pdf.output(output_path)
+
+def evaluate_batch(rubric_text, input_folder, output_folder):
+    """
+    Evaluates a batch of papers in a folder.
+    """
+    if not os.path.isdir(input_folder):
+        raise FileNotFoundError(f"Input folder not found: {input_folder}")
+    if not os.path.isdir(output_folder):
+        os.makedirs(output_folder)
+
+    for filename in os.listdir(input_folder):
+        if filename.lower().endswith(".pdf"):
+            paper_path = os.path.join(input_folder, filename)
+            output_path = os.path.join(output_folder, filename)
+            print(f"Evaluating {paper_path}...")
+
+            try:
+                paper_text = extract_text_from_pdf(paper_path)
+                evaluation_a, evaluation_b, final_evaluation = evaluate_paper(rubric_text, paper_text)
+
+                evaluation_text = f"--- Agent 1 Evaluation ---\n{evaluation_a}\n--- End of Agent 1 Evaluation ---\n\n"
+                evaluation_text += f"--- Agent 2 Evaluation ---\n{evaluation_b}\n--- End of Agent 2 Evaluation ---\n\n"
+                evaluation_text += f"--- Final Moderator Evaluation ---\n{final_evaluation}\n--- End of Final Moderator Evaluation ---\n"
+
+                save_evaluation_to_pdf(evaluation_text, output_path)
+                print(f"Saved evaluation to {output_path}")
+
+            except Exception as e:
+                print(f"Error evaluating {paper_path}: {e}", file=sys.stderr)
+
 def main():
     """
     Main function to run the evaluation script.
     """
     parser = argparse.ArgumentParser(description="Evaluate a student paper against a rubric.")
+    parser.add_argument("--batch", action="store_true", help="Enable batch processing.")
     parser.add_argument("rubric_file", help="The path to the rubric file (PDF or JSON).")
-    parser.add_argument("student_paper_pdf", help="The path to the student paper PDF file.")
+    parser.add_argument("input_path", help="The path to the student paper PDF file or a folder of papers for batch processing.")
+    parser.add_argument("output_path", nargs="?", help="The path to the output folder for batch processing.")
     args = parser.parse_args()
 
     try:
         setup_api_key()
         rubric_text = get_rubric_text(args.rubric_file)
-        paper_text = extract_text_from_pdf(args.student_paper_pdf)
-        evaluation_a, evaluation_b, final_evaluation = evaluate_paper(rubric_text, paper_text)
 
-        print("\n--- Agent 1 Evaluation ---")
-        print(evaluation_a)
-        print("--- End of Agent 1 Evaluation ---\n")
+        if args.batch:
+            if not args.output_path:
+                raise ValueError("Output path is required for batch processing.")
+            evaluate_batch(rubric_text, args.input_path, args.output_path)
+        else:
+            paper_text = extract_text_from_pdf(args.input_path)
+            evaluation_a, evaluation_b, final_evaluation = evaluate_paper(rubric_text, paper_text)
 
-        print("\n--- Agent 2 Evaluation ---")
-        print(evaluation_b)
-        print("--- End of Agent 2 Evaluation ---\n")
+            print("\n--- Agent 1 Evaluation ---")
+            print(evaluation_a)
+            print("--- End of Agent 1 Evaluation ---\n")
 
-        print("\n--- Final Moderator Evaluation ---")
-        print(final_evaluation)
-        print("--- End of Final Moderator Evaluation ---\n")
+            print("\n--- Agent 2 Evaluation ---")
+            print(evaluation_b)
+            print("--- End of Agent 2 Evaluation ---\n")
+
+            print("\n--- Final Moderator Evaluation ---")
+            print(final_evaluation)
+            print("--- End of Final Moderator Evaluation ---\n")
 
     except (ValueError, FileNotFoundError, IOError, RuntimeError) as e:
         print(f"An error occurred: {e}", file=sys.stderr)
